@@ -40,30 +40,37 @@ public class Sistema {
 
     public synchronized void ejecutar(Proceso proceso) throws InterruptedException {
         if (proceso.isProcesoSO()) {
-            procesoSO.add(proceso);
-
-            imprimirEstado(proceso);
-
-            while (!hayMemoria(proceso) || !esMiTurno(proceso, procesoSO)) {
-                wait();
-            }
-
-            procesoEjecucion.add(procesoSO.poll());
-
+            ejecutarProcesoSO(proceso);
         } else {
-            procesoUsuario.add(proceso);
-
-            imprimirEstado(proceso);
-
-            while (!hayMemoria(proceso) || !esMiTurno(proceso, procesoUsuario) || hayProcesoSistema()) {
-                wait();
-            }
-
-            procesoEjecucion.add(procesoUsuario.poll());
+            ejecutarProcesoUsuario(proceso);
         }
         memoriaDisponible -= proceso.getMemoria();
 
         imprimirEstado(proceso);
+    }
+
+    private void ejecutarProcesoUsuario(Proceso proceso) throws InterruptedException {
+        procesoUsuario.add(proceso);
+        
+        imprimirEstado(proceso);
+        
+        while (!hayMemoria(proceso) || !esMiTurno(proceso, procesoUsuario) || hayProcesoSistema()) {
+            wait();
+        }
+        
+        procesoEjecucion.add(procesoUsuario.poll());
+    }
+
+    private void ejecutarProcesoSO(Proceso proceso) throws InterruptedException {
+        procesoSO.add(proceso);
+        
+        imprimirEstado(proceso);
+        
+        while (!hayMemoria(proceso) || !esMiTurno(proceso, procesoSO)) {
+            wait();
+        }
+        
+        procesoEjecucion.add(procesoSO.poll());
     }
 
     public synchronized void finalizar(Proceso proceso) {
