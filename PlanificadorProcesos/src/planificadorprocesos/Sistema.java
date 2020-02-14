@@ -49,7 +49,7 @@ public class Sistema {
         imprimirEstado(proceso);
     }
 
-    private void ejecutarProcesoUsuario(Proceso proceso) throws InterruptedException {
+    private synchronized void ejecutarProcesoUsuario(Proceso proceso) throws InterruptedException {
         procesoUsuario.add(proceso);
         
         imprimirEstado(proceso);
@@ -61,7 +61,7 @@ public class Sistema {
         procesoEjecucion.add(procesoUsuario.poll());
     }
 
-    private void ejecutarProcesoSO(Proceso proceso) throws InterruptedException {
+    private synchronized void ejecutarProcesoSO(Proceso proceso) throws InterruptedException {
         procesoSO.add(proceso);
         
         imprimirEstado(proceso);
